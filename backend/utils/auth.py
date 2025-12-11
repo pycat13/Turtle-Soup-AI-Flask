@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, jsonify
+from flask import request, jsonify, g
 from models.user import User
 from utils.jwt import verify_token
 
@@ -16,7 +16,7 @@ def _get_bearer_token():
 
 def login_required(f):
     """
-    校验 Bearer Token，解析后注入 request.current_user
+    校验 Bearer Token，解析后注入 g.current_user
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -32,8 +32,8 @@ def login_required(f):
         if not user:
             return jsonify({"error": "unauthorized"}), 401
 
-        # 注入当前用户
-        request.current_user = user
+        # 注入当前用户，避免直接挂载到 request 产生类型提示问题
+        g.current_user = user
         return f(*args, **kwargs)
     return decorated_function
 
@@ -59,7 +59,7 @@ def admin_required(f):
         if not user.is_admin:
             return jsonify({"error": "forbidden"}), 403
 
-        request.current_user = user
+        g.current_user = user
         return f(*args, **kwargs)
     return decorated_function
 
