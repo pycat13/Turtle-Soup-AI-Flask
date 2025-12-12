@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from services.auth_service import AuthService
 from utils.jwt import create_token
 from utils.auth import login_required
@@ -17,6 +17,9 @@ def register():
         return jsonify({"error": "missing_params"}), 400
     if error == "user_exists":
         return jsonify({"error": "user_exists"}), 400
+    if not user:
+        # 理论上不会出现，为类型检查加兜底
+        return jsonify({"error": "unknown_error"}), 500
 
     return jsonify({"message": "registered", "user": user.to_dict()}), 201
 
@@ -32,6 +35,8 @@ def login():
         return jsonify({"error": "missing_params"}), 400
     if error == "invalid_credentials":
         return jsonify({"error": "invalid_credentials"}), 401
+    if not user:
+        return jsonify({"error": "unknown_error"}), 500
 
     token = create_token(user.id, user.is_admin)
     return jsonify(
@@ -46,7 +51,7 @@ def login():
 @auth_bp.route("/me", methods=["GET"])
 @login_required
 def me():
-    return jsonify({"user": request.current_user.to_dict()}), 200
+    return jsonify({"user": g.current_user.to_dict()}), 200
 
 
 @auth_bp.route("/logout", methods=["POST"])
