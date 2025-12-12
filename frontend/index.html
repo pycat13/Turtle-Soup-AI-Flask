@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Turtle Soup</title>
-    <link rel="stylesheet" href="/frontend/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/index.css">
 
-    <!-- 可爱圆润字体：Quicksand -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <!-- 为了用到图标 -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
@@ -19,38 +16,40 @@
         <p class="subtitle">Lateral Thinking Mystery Game</p>
 
         <div class="top-buttons">
-            <div class="cute-btn"><i data-lucide="trophy"></i> Leaderboard</div>
-            <div class="cute-btn"><i data-lucide="settings"></i> Settings</div>
+            <a class="cute-btn" href="/scoreboard.html"><i data-lucide="trophy"></i> Leaderboard</a>
+            <a class="cute-btn" href="/admin.html"><i data-lucide="shield"></i> Admin</a>
+            <a class="cute-btn" id="auth-btn" href="/login.html"><i data-lucide="log-in"></i> Login</a>
         </div>
     </header>
 
-    <!-- 卡片网格 -->
-    <div class="card-grid">
-
-        <!-- 卡片 1 -->
-        <a href="/mode/1" class="riddle-card card-green">
-            <span class="badge">MEDIUM</span>
-            <h2 class="card-title">The Sea Turtle Soup</h2>
-            <p class="card-desc">
-                A man walks into a restaurant, orders sea turtle soup... Why?
-            </p>
-            <div class="play-row">Play Now →</div>
-        </a>
-
-        <!-- 卡片 2 -->
-        <a href="/mode/2" class="riddle-card card-yellow">
-            <span class="badge">EASY</span>
-            <h2 class="card-title">The Broken Wood</h2>
-            <p class="card-desc">
-                A man lies dead in a field. Next to him is a package. Why?
-            </p>
-            <div class="play-row">Play Now →</div>
-        </a>
-
+    <!-- 谜题卡片 -->
+    <div class="card-grid" id="puzzle-grid">
+        <div class="riddle-card card-yellow">
+            <h2 class="card-title">Loading...</h2>
+            <p class="card-desc">Fetching puzzles...</p>
+        </div>
     </div>
 
     <script>
       lucide.createIcons();
+    </script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/puzzles.js"></script>
+    <script>
+      // 简单的登录按钮切换
+      (function() {
+        const btn = document.getElementById("auth-btn");
+        const token = getToken();
+        if (token) {
+          btn.innerHTML = '<i data-lucide="log-out"></i> Logout';
+          btn.href = "javascript:void(0)";
+          btn.onclick = function() {
+            localStorage.removeItem("token");
+            window.location.reload();
+          };
+        }
+        lucide.createIcons();
+      })();
     </script>
 </body>
 </html>

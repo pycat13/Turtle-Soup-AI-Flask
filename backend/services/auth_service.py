@@ -43,3 +43,7 @@ class AuthService:
     @staticmethod
     def get_user_by_id(user_id: int):
         return User.query.get(user_id)
+
+    @staticmethod
+    def list_users():
+        return User.query.order_by(User.id.desc()).all()

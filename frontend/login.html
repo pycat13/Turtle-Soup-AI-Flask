@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="/assets/css/index.css">
+    <style>
+        .auth-card {
+            max-width: 420px;
+            margin: 80px auto;
+            background: white;
+            border-radius: 18px;
+            padding: 26px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .auth-card h2 { margin: 0 0 12px; }
+        .auth-card label { display: block; margin: 12px 0 6px; font-weight: 600; color: #444; }
+        .auth-card input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #e2e2e2;
+            font-size: 14px;
+        }
+        .auth-card button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: #FF8FB1;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .auth-card .link {
+            display: block;
+            margin-top: 12px;
+            text-align: center;
+            color: #666;
+        }
+        .error { color: #ff4d4f; margin-top: 10px; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <header class="top-section">
+        <h1 class="title">Welcome back</h1>
+        <p class="subtitle">Sign in to play</p>
+    </header>
 
+    <div class="auth-card">
+        <h2>Login</h2>
+        <label>Username</label>
+        <input id="username" type="text" placeholder="Enter username">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="Enter password">
+        <button onclick="handleLogin()">Login</button>
+        <div class="error" id="error"></div>
+        <a class="link" href="/register.html">No account? Register</a>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script>
+        async function handleLogin() {
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value;
+            const err = document.getElementById("error");
+            err.textContent = "";
+            if (!username || !password) {
+                err.textContent = "Please enter username and password";
+                return;
+            }
+            try {
+                await AuthApi.login(username, password);
+                const params = new URLSearchParams(window.location.search);
+                const redirect = params.get("redirect") || "/";
+                window.location.href = redirect;
+            } catch (e) {
+                err.textContent = e.message || "Login failed";
+            }
+        }
+    </script>
+</body>
+</html>

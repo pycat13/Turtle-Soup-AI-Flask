@@ -1,26 +1,27 @@
 # backend/services/game_service.py
 
+from datetime import datetime
 from models.session import GameSession
 from models.score import Score
+from models.puzzle import Puzzle
 from utils.db import db
-from datetime import datetime
 from services.ai_service import AiService
 from services.score_service import ScoreService
 
 ALLOWED_MODES = ["free", "timed", "limited_questions"]
 
+
 class GameService:
 
     @staticmethod
     def start_game(puzzle_id, user_id, mode):
-        # 检查模式是否有效
+        # 检查模式是否合法
         if mode not in ALLOWED_MODES:
             return None, "invalid_mode"
 
-        # TODO: 检查 puzzle 是否存在（需要后端A接口）
-        # 例如：puzzle = Puzzle.query.get(puzzle_id)
-        # 现在先略过
-        if not puzzle_id:
+        # 检查 puzzle 是否存在
+        puzzle = Puzzle.query.get(puzzle_id)
+        if not puzzle:
             return None, "invalid_puzzle"
 
         # 创建游戏 session
@@ -34,11 +35,11 @@ class GameService:
         db.session.commit()
 
         return session, None
-    
+
     @staticmethod
     def chat(session_id, user_question, puzzle):
         """
-        puzzle 参数来自 puzzles 表：
+        puzzle 参数来自 puzzles 表:
         puzzle.description
         puzzle.standard_answer
         """
@@ -59,7 +60,7 @@ class GameService:
             if session.question_count >= 20:
                 return None, "question_limit_reached"
 
-        # —— 判断是否猜谜底 ——
+        # —— 判断是否猜底 ——
         if AiService.is_guessing_answer(user_question):
             correct = AiService.check_guess_correct(
                 puzzle.standard_answer,
@@ -67,7 +68,7 @@ class GameService:
             )
             return ("回答正确！你猜到了真相。" if correct else "不对哦，再想想。"), "guess_result"
 
-        # —— 普通 yes/no 回答 ——
+        # —— 正常 yes/no 回答 ——
         ai_answer = AiService.yes_no_answer(
             puzzle.description,
             user_question
@@ -78,7 +79,7 @@ class GameService:
         db.session.commit()
 
         return ai_answer, None
-    
+
     @staticmethod
     def finish_game(session_id, result, puzzle):
         """
@@ -97,7 +98,7 @@ class GameService:
         session.status = result
         db.session.commit()
 
-        # 2. 计算得分（失败也可以记录）
+        # 2. 计算得分（失败也记录）
         score_value = ScoreService.calculate_score(session, puzzle)
 
         # 3. 写入 scores 表

@@ -7,12 +7,17 @@ body {
 
 /* 顶部导航栏 */
 .topbar {
+    background: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.topbar-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 16px 26px;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 16px 26px;
-    background: white;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
 .top-left {
@@ -35,9 +40,8 @@ body {
 /* 黄色 SITUATION 卡片 */
 .situation-card {
     background: #FFF2B8;
-    margin: 20px auto;
+    margin: 12px 0 18px;
     padding: 18px 22px;
-    width: calc(100% - 60px);
     border-radius: 20px;
 }
 
@@ -55,26 +59,39 @@ body {
 
 /* 聊天区 */
 .chat-area {
-    padding: 10px 30px;
-    height: calc(100vh - 360px);
+    padding: 10px 0 140px 0;
+    height: calc(100vh - 400px);
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .chat-msg {
-    max-width: 480px;
-    padding: 16px 18px;
+    max-width: 70%;
+    padding: 14px 16px;
     border-radius: 16px;
-    margin: 16px 0;
+    margin: 4px 0;
     font-size: 15px;
     line-height: 1.5;
-}
-
-.system-msg {
-    background: white;
     box-shadow: 0 5px 16px rgba(0,0,0,0.08);
 }
 
-/* 用户消息 + AI 消息可后续加色区分 */
+.chat-msg.system {
+    background: #ffffff;
+    align-self: flex-start;
+}
+
+.chat-msg.ai {
+    background: #ffffff;
+    align-self: flex-start;
+}
+
+.chat-msg.user {
+    background: #FFE5EE;
+    margin-left: auto;
+    text-align: right;
+}
 
 
 
@@ -83,12 +100,16 @@ body {
 .chat-input {
     position: fixed;
     bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
+    max-width: 960px;
     background: #FBF8F8;
     padding: 12px 24px;
     display: flex;
     align-items: center;
     gap: 10px;
+    box-sizing: border-box;
 }
 
 .input-wrap {
@@ -124,4 +145,63 @@ body {
 
 .send-btn:hover {
     transform: translateY(-2px);
+}
+
+.finish-bar {
+    position: fixed;
+    bottom: 76px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 960px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+.finish-btn {
+    border: none;
+    border-radius: 14px;
+    padding: 10px 16px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.finish-btn.success {
+    background: #52c41a;
+}
+
+.finish-btn.fail {
+    background: #ff7875;
+}
+
+.status-text {
+    font-size: 13px;
+    color: #666;
+    align-self: center;
+}
+
+.status-bar {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    color: #555;
+    font-size: 13px;
+}
+
+.status-item {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 8px 12px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.chat-shell {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
 }

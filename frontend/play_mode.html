@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Mission Setup</title>
-    <link rel="stylesheet" href="/frontend/assets/css/play_mode.css">
+    <link rel="stylesheet" href="/assets/css/play_mode.css">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -16,16 +16,12 @@
 
         <h1 class="title">Mission Setup</h1>
 
-        <!-- Team Name -->
-        <label class="label">Team Name (Co-op)</label>
-        <input class="input" type="text" value="Detective Team" id="teamName">
-
         <!-- Game Mode -->
         <label class="label" style="margin-top: 22px;">Game Mode</label>
 
         <div class="mode-list">
 
-            <div class="mode-option selected" data-mode="normal">
+            <div class="mode-option selected" data-mode="free">
                 <div class="mode-title">Story Mode</div>
                 <div class="mode-desc">Relax and solve at your own pace.</div>
             </div>
@@ -35,7 +31,7 @@
                 <div class="mode-desc">Solve within 5 minutes!</div>
             </div>
 
-            <div class="mode-option" data-mode="limit">
+            <div class="mode-option" data-mode="limited_questions">
                 <div class="mode-title">Detective</div>
                 <div class="mode-desc">Limited resources. 20 questions, 3 hints.</div>
             </div>
@@ -52,7 +48,8 @@
 
 </div>
 
-<script src="/frontend/assets/js/play_mode.js"></script>
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/play_mode.js"></script>
 <script>lucide.createIcons();</script>
 
 </body>

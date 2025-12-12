@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="/assets/css/index.css">
+    <style>
+        .board-container {
+            max-width: 960px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 14px;
+        }
+        th { color: #666; }
+        .score { font-weight: 700; color: #FF8FB1; }
+        .puzzle { color: #555; }
+        .time { color: #999; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <header class="top-section">
+        <h1 class="title">Leaderboard</h1>
+        <p class="subtitle">Top detectives</p>
+        <div class="top-buttons">
+            <a class="cute-btn" href="/"><i data-lucide="home"></i> Home</a>
+        </div>
+    </header>
+
+    <div class="board-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Player</th>
+                    <th>Puzzle</th>
+                    <th>Score</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody id="score-body">
+                <tr><td colspan="5">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/scoreboard.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
