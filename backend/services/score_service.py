@@ -49,12 +49,12 @@ class ScoreService:
         return score
 
     @staticmethod
-    def get_leaderboard(limit: int = 20) -> List[Dict]:
+    def get_leaderboard(limit: int = 20, lang: str = "zh") -> List[Dict]:
         """
         返回最新的高分榜，按得分降序、时间降序。
         """
         rows = (
-            db.session.query(Score, User.username, Puzzle.title)
+            db.session.query(Score, User.username, Puzzle)
             .join(User, User.id == Score.user_id)
             .join(Puzzle, Puzzle.id == Score.puzzle_id)
             .order_by(desc(Score.score), desc(Score.created_at))
@@ -63,12 +63,12 @@ class ScoreService:
         )
 
         leaderboard = []
-        for score, username, puzzle_title in rows:
+        for score, username, puzzle in rows:
             leaderboard.append(
                 {
                     "id": score.id,
                     "username": username,
-                    "puzzle_title": puzzle_title,
+                    "puzzle_title": puzzle.get_title(lang),
                     "puzzle_id": score.puzzle_id,
                     "score": score.score,
                     "created_at": score.created_at.isoformat() if score.created_at else None,

@@ -12,7 +12,8 @@ def get_scores():
     获取排行榜
     """
     limit = request.args.get("limit", default=20, type=int)
-    data = ScoreService.get_leaderboard(limit=limit)
+    lang = request.args.get("lang", default="zh", type=str)
+    data = ScoreService.get_leaderboard(limit=limit, lang=lang)
     return jsonify({"data": data}), 200
 
 

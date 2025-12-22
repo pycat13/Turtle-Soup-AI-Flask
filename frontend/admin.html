@@ -42,6 +42,8 @@
             border-radius: 10px;
             border: none;
             cursor: pointer;
+            min-width: 64px;
+            text-align: center;
         }
 
         .btn-danger {
@@ -52,6 +54,12 @@
         .btn-secondary {
             background: #91d5ff;
             color: #fff;
+        }
+
+        .btn-muted {
+            background: #d9d9d9;
+            color: #666;
+            cursor: not-allowed;
         }
 
         .form-row {
@@ -68,6 +76,18 @@
             border: 1px solid #e2e2e2;
         }
 
+        .lang-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .lang-title {
+            font-weight: 700;
+            color: #444;
+            margin: 8px 0 6px;
+        }
+
         textarea {
             min-height: 60px;
         }
@@ -77,11 +97,6 @@
             font-size: 13px;
         }
     </style>
-    <script>
-        if (!localStorage.getItem("token")) {
-            window.location.href = "/login.html?redirect=" + encodeURIComponent(window.location.pathname);
-        }
-    </script>
 </head>
 
 <body class="auth-hidden">
@@ -97,9 +112,19 @@
     <div class="admin-wrap">
         <div class="card">
             <h3>New Puzzle</h3>
-            <div class="form-row"><input id="title" placeholder="Title"></div>
-            <div class="form-row"><textarea id="description" placeholder="Description"></textarea></div>
-            <div class="form-row"><textarea id="standard_answer" placeholder="Standard answer (for admin)"></textarea>
+            <div class="lang-grid">
+                <div>
+                    <div class="lang-title">中文</div>
+                    <div class="form-row"><input id="title_zh" placeholder="标题（中文）"></div>
+                    <div class="form-row"><textarea id="description_zh" placeholder="题面（中文）"></textarea></div>
+                    <div class="form-row"><textarea id="standard_answer_zh" placeholder="答案（中文）"></textarea></div>
+                </div>
+                <div>
+                    <div class="lang-title">English</div>
+                    <div class="form-row"><input id="title_en" placeholder="Title (EN)"></div>
+                    <div class="form-row"><textarea id="description_en" placeholder="Description (EN)"></textarea></div>
+                    <div class="form-row"><textarea id="standard_answer_en" placeholder="Answer (EN)"></textarea></div>
+                </div>
             </div>
             <button class="btn btn-secondary" onclick="createPuzzle()">Create</button>
             <div class="error" id="form-error"></div>
@@ -111,15 +136,18 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Answer</th>
+                        <th>ZH Title</th>
+                        <th>EN Title</th>
+                        <th>ZH Desc</th>
+                        <th>EN Desc</th>
+                        <th>ZH Answer</th>
+                        <th>EN Answer</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="puzzle-body">
                     <tr>
-                        <td colspan="5">Loading...</td>
+                        <td colspan="7">Loading...</td>
                     </tr>
                 </tbody>
             </table>
@@ -134,11 +162,12 @@
                         <th>Username</th>
                         <th>Is Admin</th>
                         <th>Created</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="user-body">
                     <tr>
-                        <td colspan="4">Loading...</td>
+                        <td colspan="5">Loading...</td>
                     </tr>
                 </tbody>
             </table>
@@ -147,7 +176,6 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="/assets/js/api.js"></script>
-    <script src="/assets/js/status_bar.js"></script>
     <script src="/assets/js/admin.js"></script>
     <script>lucide.createIcons();</script>
 </body>

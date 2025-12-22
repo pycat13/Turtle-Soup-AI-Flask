@@ -1,58 +1,78 @@
 <!DOCTYPE html>
 <html lang="zh">
-
 <head>
   <meta charset="UTF-8">
   <title>Turtle Soup</title>
   <link rel="stylesheet" href="/assets/css/index.css">
-
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
 <body>
-
   <header class="top-section">
     <h1 class="title">Turtle Soup</h1>
-    <p class="subtitle">Lateral Thinking Mystery Game</p>
+    <p class="subtitle" data-i18n="index.subtitle">Lateral Thinking Mystery Game</p>
 
     <div class="top-buttons">
-      <a class="cute-btn" href="/scoreboard.html"><i data-lucide="trophy"></i> Leaderboard</a>
-      <a class="cute-btn" href="/admin.html" style="display:none"><i data-lucide="shield"></i> Admin</a>
-      <a class="cute-btn" id="auth-btn" href="/login.html"><i data-lucide="log-in"></i> Login</a>
+      <a class="cute-btn" href="/scoreboard.html"><i data-lucide="trophy"></i> <span data-i18n="common.leaderboard">Leaderboard</span></a>
+      <a class="cute-btn" href="/settings.html"><i data-lucide="settings"></i> <span data-i18n="common.settings">Settings</span></a>
+      <a class="cute-btn" id="admin-btn" href="/admin.html"><i data-lucide="shield"></i> <span data-i18n="common.admin">Admin</span></a>
+      <a class="cute-btn" id="auth-btn" href="/login.html"><i data-lucide="log-in"></i> <span data-i18n="common.login">Login</span></a>
     </div>
   </header>
 
-  <!-- 谜题卡片 -->
   <div class="card-grid" id="puzzle-grid">
     <div class="riddle-card card-yellow">
-      <h2 class="card-title">Loading...</h2>
-      <p class="card-desc">Fetching puzzles...</p>
+      <h2 class="card-title" data-i18n="common.loading">Loading...</h2>
+      <p class="card-desc" data-i18n="index.fetching">Fetching puzzles...</p>
     </div>
   </div>
 
-  <script>
-    lucide.createIcons();
-  </script>
+  <script>lucide.createIcons();</script>
+  <script src="/assets/js/i18n.js"></script>
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/puzzles.js"></script>
-  <script src="/assets/js/status_bar.js"></script>
   <script>
-    // 简单的登录按钮切换
     (function () {
-      const btn = document.getElementById("auth-btn");
+      const authBtn = document.getElementById("auth-btn");
+      const adminBtn = document.getElementById("admin-btn");
+
       const token = getToken();
       if (token) {
-        btn.innerHTML = '<i data-lucide="log-out"></i> Logout';
-        btn.href = "javascript:void(0)";
-        btn.onclick = function () {
+        authBtn.innerHTML = `<i data-lucide="log-out"></i> <span>${I18N.t("common.logout", "Logout")}</span>`;
+        authBtn.href = "javascript:void(0)";
+        authBtn.onclick = function () {
           localStorage.removeItem("token");
           window.location.reload();
         };
+      } else {
+        authBtn.innerHTML = `<i data-lucide="log-in"></i> <span>${I18N.t("common.login", "Login")}</span>`;
       }
+
+      adminBtn.addEventListener("click", async function (e) {
+        e.preventDefault();
+        const tokenNow = getToken();
+        const redirectUrl = "/login.html?redirect=" + encodeURIComponent("/admin.html");
+        if (!tokenNow) {
+          window.location.href = redirectUrl;
+          return;
+        }
+        try {
+          const res = await apiFetch("/api/auth/me");
+          const data = await res.json();
+          if (!res.ok || !data.user || !data.user.is_admin) {
+            alert(I18N.t("common.notAdmin", "Not admin"));
+            window.location.href = redirectUrl;
+            return;
+          }
+          window.location.href = "/admin.html";
+        } catch (err) {
+          window.location.href = redirectUrl;
+        }
+      });
+
+      I18N.applyTranslations();
       lucide.createIcons();
     })();
   </script>
 </body>
-
 </html>

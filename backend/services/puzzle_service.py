@@ -13,11 +13,22 @@ class PuzzleService:
         return Puzzle.query.get(puzzle_id)
 
     @staticmethod
-    def create_puzzle(title: str, description: str, standard_answer: str, created_by: int = None) -> Puzzle:
+    def create_puzzle(
+        title_zh: str,
+        description_zh: str,
+        standard_answer_zh: str,
+        title_en: str = None,
+        description_en: str = None,
+        standard_answer_en: str = None,
+        created_by: int = None,
+    ) -> Puzzle:
         puzzle = Puzzle(
-            title=title,
-            description=description,
-            standard_answer=standard_answer,
+            title_zh=title_zh,
+            description_zh=description_zh,
+            standard_answer_zh=standard_answer_zh,
+            title_en=title_en,
+            description_en=description_en,
+            standard_answer_en=standard_answer_en,
             created_by=created_by,
         )
         db.session.add(puzzle)
@@ -25,13 +36,24 @@ class PuzzleService:
         return puzzle
 
     @staticmethod
-    def update_puzzle(puzzle_id: int, title: str, description: str, standard_answer: str) -> Tuple[Optional[Puzzle], Optional[str]]:
+    def update_puzzle(
+        puzzle_id: int,
+        title_zh: str,
+        description_zh: str,
+        standard_answer_zh: str,
+        title_en: str = None,
+        description_en: str = None,
+        standard_answer_en: str = None,
+    ) -> Tuple[Optional[Puzzle], Optional[str]]:
         puzzle = Puzzle.query.get(puzzle_id)
         if not puzzle:
             return None, "not_found"
-        puzzle.title = title
-        puzzle.description = description
-        puzzle.standard_answer = standard_answer
+        puzzle.title_zh = title_zh
+        puzzle.description_zh = description_zh
+        puzzle.standard_answer_zh = standard_answer_zh
+        puzzle.title_en = title_en
+        puzzle.description_en = description_en
+        puzzle.standard_answer_en = standard_answer_en
         db.session.commit()
         return puzzle, None
 

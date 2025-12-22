@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh">
-
 <head>
     <meta charset="UTF-8">
     <title>Leaderboard</title>
@@ -14,47 +13,21 @@
             padding: 20px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 12px 10px;
-            text-align: left;
-            border-bottom: 1px solid #f1f1f1;
-            font-size: 14px;
-        }
-
-        th {
-            color: #666;
-        }
-
-        .score {
-            font-weight: 700;
-            color: #FF8FB1;
-        }
-
-        .puzzle {
-            color: #555;
-        }
-
-        .time {
-            color: #999;
-            font-size: 12px;
-        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #f1f1f1; font-size: 14px; }
+        th { color: #666; }
+        .score { font-weight: 700; color: #FF8FB1; }
+        .puzzle { color: #555; }
+        .time { color: #999; font-size: 12px; }
     </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
 <body>
-
     <header class="top-section">
-        <h1 class="title">Leaderboard</h1>
-        <p class="subtitle">Top detectives</p>
+        <h1 class="title" data-i18n="scoreboard.title">Leaderboard</h1>
+        <p class="subtitle" data-i18n="scoreboard.subtitle">Top detectives</p>
         <div class="top-buttons">
-            <a class="cute-btn" href="/"><i data-lucide="home"></i> Home</a>
+            <a class="cute-btn" href="/"><i data-lucide="home"></i> <span data-i18n="common.home">Home</span></a>
         </div>
     </header>
 
@@ -70,18 +43,14 @@
                 </tr>
             </thead>
             <tbody id="score-body">
-                <tr>
-                    <td colspan="5">Loading...</td>
-                </tr>
+                <tr><td colspan="5">Loading...</td></tr>
             </tbody>
         </table>
     </div>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="/assets/js/i18n.js"></script>
     <script src="/assets/js/api.js"></script>
-    <script src="/assets/js/status_bar.js"></script>
     <script src="/assets/js/scoreboard.js"></script>
-    <script>lucide.createIcons();</script>
+    <script>I18N.applyTranslations(); lucide.createIcons();</script>
 </body>
-
 </html>

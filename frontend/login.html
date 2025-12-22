@@ -12,7 +12,9 @@
             border-radius: 18px;
             padding: 26px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            box-sizing: border-box;
         }
+        .auth-card * { box-sizing: border-box; }
         .auth-card h2 { margin: 0 0 12px; }
         .auth-card label { display: block; margin: 12px 0 6px; font-weight: 600; color: #444; }
         .auth-card input {
@@ -44,24 +46,26 @@
 </head>
 <body>
     <header class="top-section">
-        <h1 class="title">Welcome back</h1>
-        <p class="subtitle">Sign in to play</p>
+        <h1 class="title" data-i18n="auth.welcomeBack">Welcome back</h1>
+        <p class="subtitle" data-i18n="auth.signInToPlay">Sign in to play</p>
     </header>
 
     <div class="auth-card">
-        <h2>Login</h2>
-        <label>Username</label>
-        <input id="username" type="text" placeholder="Enter username">
-        <label>Password</label>
-        <input id="password" type="password" placeholder="Enter password">
-        <button onclick="handleLogin()">Login</button>
+        <h2 data-i18n="auth.login">Login</h2>
+        <label data-i18n="auth.username">Username</label>
+        <input id="username" type="text" placeholder="Enter username" data-i18n-placeholder="auth.username">
+        <label data-i18n="auth.password">Password</label>
+        <input id="password" type="password" placeholder="Enter password" data-i18n-placeholder="auth.password">
+        <button onclick="handleLogin()" data-i18n="auth.login">Login</button>
         <div class="error" id="error"></div>
-        <a class="link" href="/register.html">No account? Register</a>
+        <a class="link" href="/register.html" data-i18n="auth.noAccount">No account? Register</a>
     </div>
 
+    <script src="/assets/js/i18n.js"></script>
     <script src="/assets/js/api.js"></script>
     <script src="/assets/js/auth.js"></script>
     <script>
+        I18N.applyTranslations();
         async function handleLogin() {
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value;

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>Settings</title>
+  <link rel="stylesheet" href="/assets/css/index.css">
+  <style>
+    .settings-card {
+      max-width: 520px;
+      margin: 80px auto;
+      background: #fff;
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      box-sizing: border-box;
+    }
+    .settings-card * { box-sizing: border-box; }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 16px 0;
+      gap: 12px;
+    }
+    .radio-group {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-primary { background: #FF8FB1; color: #fff; }
+    .btn-secondary { background: #eee; color: #333; }
+  </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <header class="top-section">
+    <h1 class="title" data-i18n="settings.title">Settings</h1>
+    <p class="subtitle" data-i18n="settings.subtitle">Personalize your experience</p>
+    <div class="top-buttons">
+      <a class="cute-btn" href="/"><i data-lucide="home"></i> <span data-i18n="common.home">Home</span></a>
+    </div>
+  </header>
+
+  <div class="settings-card">
+    <div class="row">
+      <div style="font-weight:700" data-i18n="settings.language">Language</div>
+      <div class="radio-group">
+        <label><input type="radio" name="lang" id="lang-zh"> <span data-i18n="settings.zh">中文</span></label>
+        <label><input type="radio" name="lang" id="lang-en"> <span data-i18n="settings.en">English</span></label>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="history.back()"><span data-i18n="settings.back">Back</span></button>
+      <button class="btn btn-primary" id="save-btn"><span data-i18n="settings.save">Save</span></button>
+    </div>
+  </div>
+
+  <script src="/assets/js/i18n.js"></script>
+  <script src="/assets/js/settings.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
+

@@ -12,7 +12,9 @@
             border-radius: 18px;
             padding: 26px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            box-sizing: border-box;
         }
+        .auth-card * { box-sizing: border-box; }
         .auth-card h2 { margin: 0 0 12px; }
         .auth-card label { display: block; margin: 12px 0 6px; font-weight: 600; color: #444; }
         .auth-card input {
@@ -44,24 +46,26 @@
 </head>
 <body>
     <header class="top-section">
-        <h1 class="title">Join us</h1>
-        <p class="subtitle">Create an account to play</p>
+        <h1 class="title" data-i18n="auth.joinUs">Join us</h1>
+        <p class="subtitle" data-i18n="auth.createAccount">Create an account to play</p>
     </header>
 
     <div class="auth-card">
-        <h2>Register</h2>
-        <label>Username</label>
-        <input id="username" type="text" placeholder="Enter username">
-        <label>Password</label>
-        <input id="password" type="password" placeholder="Enter password">
-        <button onclick="handleRegister()">Register</button>
+        <h2 data-i18n="auth.register">Register</h2>
+        <label data-i18n="auth.username">Username</label>
+        <input id="username" type="text" placeholder="Enter username" data-i18n-placeholder="auth.username">
+        <label data-i18n="auth.password">Password</label>
+        <input id="password" type="password" placeholder="Enter password" data-i18n-placeholder="auth.password">
+        <button onclick="handleRegister()" data-i18n="auth.register">Register</button>
         <div class="error" id="error"></div>
-        <a class="link" href="/login.html">Already have an account? Login</a>
+        <a class="link" href="/login.html" data-i18n="auth.haveAccount">Already have an account? Login</a>
     </div>
 
+    <script src="/assets/js/i18n.js"></script>
     <script src="/assets/js/api.js"></script>
     <script src="/assets/js/auth.js"></script>
     <script>
+        I18N.applyTranslations();
         async function handleRegister() {
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value;
