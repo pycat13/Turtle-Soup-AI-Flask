@@ -110,6 +110,29 @@
     </header>
 
     <div class="admin-wrap">
+        <div class="card" id="edit-card" style="display:none;">
+            <h3>Edit Puzzle <span id="edit-id"></span></h3>
+            <div class="lang-grid">
+                <div>
+                    <div class="lang-title">中文</div>
+                    <div class="form-row"><input id="edit_title_zh" placeholder="鏍囬锛堜腑鏂囷級"></div>
+                    <div class="form-row"><textarea id="edit_description_zh" placeholder="棰橀潰锛堜腑鏂囷級"></textarea></div>
+                    <div class="form-row"><textarea id="edit_standard_answer_zh" placeholder="绛旀锛堜腑鏂囷級"></textarea></div>
+                </div>
+                <div>
+                    <div class="lang-title">English</div>
+                    <div class="form-row"><input id="edit_title_en" placeholder="Title (EN)"></div>
+                    <div class="form-row"><textarea id="edit_description_en" placeholder="Description (EN)"></textarea></div>
+                    <div class="form-row"><textarea id="edit_standard_answer_en" placeholder="Answer (EN)"></textarea></div>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="btn btn-secondary" onclick="updatePuzzle()">Update</button>
+                <button class="btn" onclick="cancelEditPuzzle()">Cancel</button>
+            </div>
+            <div class="error" id="edit-error"></div>
+        </div>
+
         <div class="card">
             <h3>New Puzzle</h3>
             <div class="lang-grid">
@@ -147,7 +170,7 @@
                 </thead>
                 <tbody id="puzzle-body">
                     <tr>
-                        <td colspan="7">Loading...</td>
+                        <td colspan="8">Loading...</td>
                     </tr>
                 </tbody>
             </table>

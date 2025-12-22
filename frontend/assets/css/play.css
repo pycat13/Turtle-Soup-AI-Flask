@@ -90,7 +90,7 @@ body {
 .chat-msg.user {
     background: #FFE5EE;
     margin-left: auto;
-    text-align: right;
+    text-align: left;
 }
 
 

@@ -1,4 +1,6 @@
 let currentUser = null;
+let puzzlesById = new Map();
+let editingPuzzleId = null;
 
 async function ensureAdmin() {
     const token = getToken();
@@ -23,18 +25,19 @@ async function ensureAdmin() {
 
 async function loadPuzzles() {
     const body = document.getElementById("puzzle-body");
-    body.innerHTML = "<tr><td colspan='7'>Loading...</td></tr>";
+    body.innerHTML = "<tr><td colspan='8'>Loading...</td></tr>";
     try {
         const res = await apiFetch("/api/admin/puzzles");
         const data = await res.json();
         if (res.status === 401 || res.status === 403) {
-            body.innerHTML = "<tr><td colspan='7'>Unauthorized</td></tr>";
+            body.innerHTML = "<tr><td colspan='8'>Unauthorized</td></tr>";
             window.location.href = "/login.html?redirect=" + encodeURIComponent(window.location.pathname);
             return;
         }
         const list = data.data || [];
+        puzzlesById = new Map(list.map((p) => [p.id, p]));
         if (list.length === 0) {
-            body.innerHTML = "<tr><td colspan='7'>No puzzles</td></tr>";
+            body.innerHTML = "<tr><td colspan='8'>No puzzles</td></tr>";
             return;
         }
         body.innerHTML = "";
@@ -49,7 +52,7 @@ async function loadPuzzles() {
                 <td>${p.standard_answer_zh || ""}</td>
                 <td>${p.standard_answer_en || ""}</td>
                 <td>
-                    <button class="btn btn-secondary" onclick="editPuzzle(${p.id})">Edit</button>
+                    <button class="btn btn-secondary" onclick="openEditPuzzle(${p.id})">Edit</button>
                     <button class="btn btn-danger" onclick="deletePuzzle(${p.id})">Delete</button>
                 </td>
             `;
@@ -57,7 +60,7 @@ async function loadPuzzles() {
         });
     } catch (err) {
         console.error(err);
-        body.innerHTML = "<tr><td colspan='7'>Network error</td></tr>";
+        body.innerHTML = "<tr><td colspan='8'>Network error</td></tr>";
     }
 }
 
@@ -175,22 +178,60 @@ async function createPuzzle() {
     }
 }
 
-async function editPuzzle(id) {
-    const title_zh = prompt("New title (ZH):");
-    if (title_zh === null) return;
-    const description_zh = prompt("New description (ZH):");
-    if (description_zh === null) return;
-    const standard_answer_zh = prompt("New standard answer (ZH):");
-    if (standard_answer_zh === null) return;
-    const title_en = prompt("New title (EN) [optional]:");
-    if (title_en === null) return;
-    const description_en = prompt("New description (EN) [optional]:");
-    if (description_en === null) return;
-    const standard_answer_en = prompt("New standard answer (EN) [optional]:");
-    if (standard_answer_en === null) return;
+function openEditPuzzle(id) {
+    const p = puzzlesById.get(id);
+    if (!p) {
+        alert("Puzzle not found");
+        return;
+    }
+    editingPuzzleId = id;
+
+    const card = document.getElementById("edit-card");
+    const err = document.getElementById("edit-error");
+    const idEl = document.getElementById("edit-id");
+    if (err) err.textContent = "";
+    if (idEl) idEl.textContent = `#${id}`;
+
+    document.getElementById("edit_title_zh").value = p.title_zh || "";
+    document.getElementById("edit_description_zh").value = p.description_zh || "";
+    document.getElementById("edit_standard_answer_zh").value = p.standard_answer_zh || "";
+    document.getElementById("edit_title_en").value = p.title_en || "";
+    document.getElementById("edit_description_en").value = p.description_en || "";
+    document.getElementById("edit_standard_answer_en").value = p.standard_answer_en || "";
+
+    if (card) {
+        card.style.display = "block";
+        card.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+}
+
+function cancelEditPuzzle() {
+    editingPuzzleId = null;
+    const card = document.getElementById("edit-card");
+    const err = document.getElementById("edit-error");
+    if (err) err.textContent = "";
+    if (card) card.style.display = "none";
+}
+
+async function updatePuzzle() {
+    if (!editingPuzzleId) return;
+    const err = document.getElementById("edit-error");
+    if (err) err.textContent = "";
+
+    const title_zh = document.getElementById("edit_title_zh").value.trim();
+    const description_zh = document.getElementById("edit_description_zh").value.trim();
+    const standard_answer_zh = document.getElementById("edit_standard_answer_zh").value.trim();
+    const title_en = document.getElementById("edit_title_en").value.trim();
+    const description_en = document.getElementById("edit_description_en").value.trim();
+    const standard_answer_en = document.getElementById("edit_standard_answer_en").value.trim();
+
+    if (!title_zh || !description_zh || !standard_answer_zh) {
+        if (err) err.textContent = "Please fill Chinese fields";
+        return;
+    }
 
     try {
-        const res = await apiFetch(`/api/admin/puzzles/${id}`, {
+        const res = await apiFetch(`/api/admin/puzzles/${editingPuzzleId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -204,13 +245,14 @@ async function editPuzzle(id) {
         });
         const data = await res.json();
         if (!res.ok) {
-            alert(data.error || "Update failed");
+            if (err) err.textContent = data.error || "Update failed";
             return;
         }
+        cancelEditPuzzle();
         loadPuzzles();
     } catch (e) {
         console.error(e);
-        alert("Network error");
+        if (err) err.textContent = "Network error";
     }
 }
 
@@ -236,3 +278,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     loadPuzzles();
     loadUsers();
 });
+
+window.openEditPuzzle = openEditPuzzle;
+window.cancelEditPuzzle = cancelEditPuzzle;
+window.updatePuzzle = updatePuzzle;

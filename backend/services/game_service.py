@@ -57,22 +57,26 @@ class GameService:
             if session.question_count >= 20:
                 return None, "question_limit_reached"
 
-        # 玩家可能在任意一句话里表达出已经猜到真相：每次都做一次“是否完全猜出真相”判定
-        solved = AiService.check_solved(
+        lang = AiService.detect_language(user_question)
+        ai = AiService.respond(
+            description_zh=puzzle.description_zh,
             truth_zh=puzzle.standard_answer_zh,
+            description_en=puzzle.description_en,
             truth_en=puzzle.standard_answer_en,
             user_text=user_question,
+            lang=lang,
         )
-        if solved:
-            # 自动结算为成功
+
+        if ai.solved:
             score_value, error = GameService.finish_game(session_id, "success", puzzle)
             if error == "already_finished":
                 return None, "already_finished"
 
-            if AiService.detect_language(user_question) == "en":
-                msg = "You solved it! Score has been settled."
-            else:
-                msg = "你已经猜到真相了！已自动结算得分。"
+            msg = (
+                "You solved it! Score has been settled."
+                if lang == "en"
+                else "你已经猜到真相了！已自动结算得分。"
+            )
 
             return {
                 "type": "game_over",
@@ -81,13 +85,7 @@ class GameService:
                 "answer": msg,
             }, None
 
-        ai_answer = AiService.yes_no_answer(
-            description_zh=puzzle.description_zh,
-            truth_zh=puzzle.standard_answer_zh,
-            description_en=puzzle.description_en,
-            truth_en=puzzle.standard_answer_en,
-            question=user_question,
-        )
+        ai_answer = ai.reply
 
         session.question_count += 1
         db.session.commit()
@@ -107,14 +105,25 @@ class GameService:
         session.status = result
         db.session.commit()
 
-        score_value = ScoreService.calculate_score(session, puzzle)
-
-        score = Score(
-            user_id=session.user_id,
-            puzzle_id=session.puzzle_id,
-            score=score_value
+        existing_success = (
+            Score.query.filter_by(user_id=session.user_id, puzzle_id=session.puzzle_id)
+            .filter(Score.score >= 0)
+            .order_by(Score.created_at.asc(), Score.id.asc())
+            .first()
         )
 
+        # 规则：
+        # - 成功只记录第一次通过得分；同题目后续成功不再加分
+        # - 放弃（负分）可累加，直到第一次成功为止；成功后不再累计负分
+        if result == "success" and existing_success:
+            return int(existing_success.score), None
+
+        if result == "fail" and existing_success:
+            return 0, None
+
+        score_value = int(ScoreService.calculate_score(session, puzzle))
+
+        score = Score(user_id=session.user_id, puzzle_id=session.puzzle_id, score=score_value)
         db.session.add(score)
         db.session.commit()
 
